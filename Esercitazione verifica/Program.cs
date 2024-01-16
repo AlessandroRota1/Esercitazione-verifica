@@ -148,16 +148,18 @@ namespace Esercitazione_verifica
             Console.Clear();
             Console.Write("Inserisci il nome del titolare del conto: ");
             string nomeTitolare = Console.ReadLine();
-
             foreach (Conto c in conti)
             {
                 if (c != null && c.Nome == nomeTitolare)
                 {
-                    Console.Write("Inserisci l'importo da depositare: ");
-                    float cifra = float.Parse(Console.ReadLine());
-                    c.Deposita(cifra);
-                    Console.WriteLine($"Deposito di {cifra} euro effettuato con successo.");
-                    return;
+                    if (c.Chiuso() == true)
+                    {
+                        Console.Write("Inserisci l'importo da depositare: ");
+                        float cifra = float.Parse(Console.ReadLine());
+                        c.Deposita(cifra);
+                        Console.WriteLine($"Deposito di {cifra} euro effettuato con successo.");
+                        return;
+                    }
                 }
             }
 
@@ -231,7 +233,7 @@ namespace Esercitazione_verifica
             {
                 if (conti[i] != null && conti[i].Nome == conti[i].Nome)
                 {
-                    c = conti[i];
+                    totaleDeposito += conti[i].Saldo();
                 }
                 i++;
             }
@@ -297,9 +299,9 @@ class Program
 
                 case 7:
                     Console.Write("Inserisci la provincia: ");
-                    string provinciaScelta = Console.ReadLine();
-                    float totaleDepositiProvincia = banca.DepositoClientiProvincia(provinciaScelta);
-                    Console.WriteLine($"Il totale dei depositi dei clienti residenti in {provinciaScelta} è: {totaleDepositiProvincia} euro.");
+                    string prov = Console.ReadLine();
+                    float totale = banca.DepositoClientiProvincia(prov);
+                    Console.WriteLine($"Il totale dei depositi dei clienti residenti in {prov} è: {totale} euro.");
                     break;
 
                 case 0:
