@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Esercitazione_verifica;
+using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Configuration;
@@ -9,207 +10,308 @@ using System.Threading.Tasks;
 
 namespace Esercitazione_verifica
 {
-    class persona
+    class Persona
     {
         private string nome;
+        private string cognome;
+        private string provincia;
+
         public string Nome
         {
-            get => nome;
-            set
-            { if (value.Length >= 2)
-                    nome = value;
-              else nome = "Sconosciuto";
-            }
+            get { return nome; }
+            set { nome = value; }
         }
-        private string cognome;
-        public string Cognome
+        public string Cogome
         {
-            get => cognome;
-            set
-            {
-                if (value.Length >= 2)
-                    cognome = value;
-                else cognome = "Sconosciuto";
-            }
+            get { return cognome; }
+            set { cognome = value; }
         }
-        private string provincia;
-        public string Provincia
+        public string Provincia_
         {
-            get => provincia;
-            set
-            {
-                provincia = value;
-            }
+            get { return provincia; }
+            set { provincia = value; }
         }
     }
-    class conto : persona
+
+    class Conto : Persona
     {
-        private double saldo;
-        public double Saldo
+        private float euro;
+        private bool chiu;
+
+        public float Euro
         {
-            get => saldo;
-            set
-            { 
-                if (value > 0)
-                    saldo = value;
-                else 
-                    Console.WriteLine("Inserire un valore maggiore di 0");
-            }
+            get { return euro; }
+            set { euro = value; }
         }
-        private bool chiuso;
-        public bool Chiuso
+
+        public bool Chiu
         {
-            get { return chiuso; }
-            set { chiuso = value; }
+            get { return chiu; }
+            set { chiu = value; }
         }
-        public void cconto()
+
+        public Conto()
         {
-            chiuso = false;
-            saldo = 0;
+            Euro = 0;
+            Chiu = true;
         }
-        public void apri()
+
+        public void Apri()
         {
-            chiuso = true;
+            Chiu = false;
         }
-        public void deposita()
+
+        public void Deposita(float cifra)
         {
-            Console.WriteLine("Quanto vuoi depositare sul conto corrente");
-            saldo = saldo + (double.Parse(Console.ReadLine()));
+            Euro = Euro + cifra;
         }
-        public void preleva()
+
+        public void Preleva(float cifra)
         {
-            Console.WriteLine("Quanto vuoi prelevare sul conto corrente");
-            saldo = saldo - (double.Parse(Console.ReadLine()));
+            if (cifra <= Euro)
+                Euro = Euro - cifra;
+            else
+                Console.WriteLine("Saldo insufficiente.");
         }
-        public double ssaldo()
+
+        public float Saldo()
         {
-            return saldo;
+            return Euro;
         }
-        public void chiudiconto()
+
+        public void Chiusura()
         {
-            chiuso = false;
+            Chiu = true;
         }
-        public bool cchiuso()
-        { 
-            return chiuso; 
-        }
-        public void getinfo()
+
+        public bool Chiuso()
         {
-            Console.WriteLine("Nome e cognome del titolare del conto corrente:" + Nome + " " + Cognome + " "+ "dalla provincia di: " + Provincia);
-            if (chiuso) { Console.WriteLine("Conto aperto"); }
-            else { Console.WriteLine("Conto chiuso"); }
-            Console.WriteLine("Saldo all'interno del conto: "+ saldo);
+            return Chiu;
+        }
+
+        public void GetInfo()
+        {
+            Console.WriteLine($"Nome: {Nome}, Saldo: {Euro}, Chiuso: {Chiu} provincia: {Provincia_}");
+        }
+
+        public string Provincia()
+        {
+            return Provincia_;
         }
     }
-    class banca
+
+    class Banca
     {
-        private conto[] arrayconti = new conto[100];
-        private int i = 0;
-        public banca()
+        private Conto[] conti;
+        private int numConti;
+
+        public Banca(int maxConti)
         {
-            for (int i = 0; i < 100; i++)
+            conti = new Conto[maxConti];
+            numConti = 0;
+        }
+
+        public void ApriConto()
+        {
+            Console.Clear();
+            Conto nuovoConto = new Conto();
+
+            Console.Write("Inserisci il nome del titolare del conto: ");
+            nuovoConto.Nome = Console.ReadLine();
+            Console.WriteLine("Inserire la provincia di provenienza:");
+            nuovoConto.Provincia_ = Console.ReadLine();
+            conti[numConti] = nuovoConto;
+            numConti++;
+        }
+
+        public void ChiudiConto()
+        {
+            Console.Clear();
+            Console.Write("Inserisci il nome del titolare del conto da chiudere: ");
+            string nomeTitolare = Console.ReadLine();
+
+            foreach (Conto c in conti)
             {
-                arrayconti[i] = new conto();
-            }
-        }
-        public void Apriconto()
-        {
-            arrayconti[i].apri();
-            i++;
-            Console.WriteLine("Benvenuto nella banca!\n");
-            Console.WriteLine("Inserisci il nome");
-            arrayconti[i].Nome = Console.ReadLine();
-            Console.WriteLine("Inserisci il cognome");
-            arrayconti[i].Cognome = Console.ReadLine();
-            Console.WriteLine("Inserisci la provincia");
-            arrayconti[i].Provincia = Console.ReadLine();
-        }
-        public void Chiudiconto()
-        {
-            arrayconti[i].chiudiconto();
-            i++;
-            Console.WriteLine("Il conto è stato chiuso.\n");
-        }
-        public void Depositasuconto()
-        {
-            arrayconti[i].deposita();
-            i++;
-        }
-        public void Prelevadaconto()
-        {
-            arrayconti[i].preleva();
-            i++;
-        }
-        public void Vedisaldoconto()
-        {
-            Console.WriteLine("Il saldo sul conto è di: " + arrayconti[i].ssaldo() + "\n");
-        }
-        public void Vediinfoconto()
-        {
-            arrayconti[i].getinfo();
-        }
-    }
-    internal class Program
-    {
-        static void Main(string[] args)
-        {
-            banca paolobanchero = new banca();
-            string risposta;
-
-            do
-            {
-                Console.WriteLine("Inserisci il numero corrispondente alla pratica da svolgere:");
-                Console.WriteLine("1) Apri il conto");
-                Console.WriteLine("2) Chiudi il conto");
-                Console.WriteLine("3) Deposita sul conto");
-                Console.WriteLine("4) Preleva dal conto");
-                Console.WriteLine("5) Vedi saldo sul conto");
-                Console.WriteLine("6) Vedi informazioni sul conto");
-                Console.WriteLine("7) Esci");
-
-                risposta = Console.ReadLine();
-
-                switch (risposta)
+                if (c != null && c.Nome == nomeTitolare)
                 {
-                    case "1":
-
-                        Console.Clear();
-                        paolobanchero.Apriconto();
-                        break;
-
-                    case "2":
-
-                        Console.Clear();
-                        paolobanchero.Chiudiconto();
-                        break;
-
-                    case "3":
-
-                        Console.Clear();
-                        paolobanchero.Depositasuconto();
-                        break;
-
-                    case "4":
-
-                        Console.Clear();
-                        paolobanchero.Prelevadaconto();
-                        break;
-
-                    case "5":
-
-                        Console.Clear();
-                        paolobanchero.Vedisaldoconto();
-                        break;
-
-                    case "6":
-
-                        Console.Clear();
-                        paolobanchero.Vediinfoconto();
-                        break;
+                    c.Chiusura();
+                    Console.WriteLine("Conto chiuso con successo.");
+                    return;
                 }
-            } while (risposta != string.Empty || risposta != "7");
+            }
 
-            Console.ReadKey();
+            Console.WriteLine("Conto non trovato.");
         }
+
+        public void DepositaSuConto()
+        {
+            Console.Clear();
+            Console.Write("Inserisci il nome del titolare del conto: ");
+            string nomeTitolare = Console.ReadLine();
+
+            foreach (Conto c in conti)
+            {
+                if (c != null && c.Nome == nomeTitolare)
+                {
+                    Console.Write("Inserisci l'importo da depositare: ");
+                    float cifra = float.Parse(Console.ReadLine());
+                    c.Deposita(cifra);
+                    Console.WriteLine($"Deposito di {cifra} euro effettuato con successo.");
+                    return;
+                }
+            }
+
+            Console.WriteLine("Conto non trovato.");
+        }
+
+        public void PrelevaDaConto()
+        {
+            Console.Clear();
+            Console.Write("Inserisci il nome del titolare del conto: ");
+            string nomeTitolare = Console.ReadLine();
+
+            foreach (Conto c in conti)
+            {
+                if (c != null && c.Nome == nomeTitolare)
+                {
+                    Console.Write("Inserisci l'importo da prelevare: ");
+                    float cifra = float.Parse(Console.ReadLine());
+                    c.Preleva(cifra);
+                    Console.WriteLine($"Prelievo di {cifra} euro effettuato con successo.");
+                    return;
+                }
+            }
+
+            Console.WriteLine("Conto non trovato.");
+        }
+
+        public void VediSaldoConto()
+        {
+            Console.Clear();
+            Console.Write("Inserisci il nome del titolare del conto: ");
+            string nomeTitolare = Console.ReadLine();
+
+            foreach (Conto c in conti)
+            {
+                if (c != null && c.Nome == nomeTitolare)
+                {
+                    Console.WriteLine($"Il saldo del conto di {c.Nome} è: {c.Saldo()} euro.");
+                    return;
+                }
+            }
+
+            Console.WriteLine("Conto non trovato.");
+        }
+
+        public void VediInfoConto()
+        {
+            Console.Clear();
+            Console.Write("Inserisci il nome del titolare del conto: ");
+            string nomeTitolare = Console.ReadLine();
+
+            foreach (Conto c in conti)
+            {
+                if (c != null && c.Nome == nomeTitolare)
+                {
+                    c.GetInfo();
+                    return;
+                }
+            }
+
+            Console.WriteLine("Conto non trovato.");
+        }
+        public float DepositoClientiProvincia(string provincia)
+        {
+            Console.Clear();
+            float totaleDeposito = 0;
+
+            Conto c = null;
+            int i = 0;
+            while (i < conti.Length && c == null)
+            {
+                if (conti[i] != null && conti[i].Nome == conti[i].Nome)
+                {
+                    c = conti[i];
+                }
+                i++;
+            }
+
+            if (c != null)
+            {
+                c.GetInfo();
+            }
+
+            return totaleDeposito;
+        }
+    }
+
+}
+class Program
+{
+    static void Main()
+    {
+        Banca banca = new Banca(10);
+
+        int scelta;
+
+
+        do
+        {
+            Console.WriteLine("1. Apri Conto");
+            Console.WriteLine("2. Chiudi Conto");
+            Console.WriteLine("3. Deposita su Conto");
+            Console.WriteLine("4. Preleva da Conto");
+            Console.WriteLine("5. Vedi Saldo Conto");
+            Console.WriteLine("6. Vedi Info Conto");
+            Console.WriteLine("7. Somma conti province");
+            Console.WriteLine("0. Esci");
+
+            Console.Write("Scelta: ");
+            scelta = int.Parse(Console.ReadLine());
+
+            switch (scelta)
+            {
+                case 1:
+                    banca.ApriConto();
+                    break;
+
+                case 2:
+                    banca.ChiudiConto();
+                    break;
+
+                case 3:
+                    banca.DepositaSuConto();
+                    break;
+
+                case 4:
+                    banca.PrelevaDaConto();
+                    break;
+
+                case 5:
+                    banca.VediSaldoConto();
+                    break;
+
+                case 6:
+                    banca.VediInfoConto();
+                    break;
+
+                case 7:
+                    Console.Write("Inserisci la provincia: ");
+                    string provinciaScelta = Console.ReadLine();
+                    float totaleDepositiProvincia = banca.DepositoClientiProvincia(provinciaScelta);
+                    Console.WriteLine($"Il totale dei depositi dei clienti residenti in {provinciaScelta} è: {totaleDepositiProvincia} euro.");
+                    break;
+
+                case 0:
+                    Console.WriteLine("Esci.");
+                    break;
+
+                default:
+                    Console.WriteLine("Non valido.");
+                    break;
+            }
+
+        } while (scelta != 0);
     }
 }
+
